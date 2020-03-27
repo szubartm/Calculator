@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import static java.lang.Double.NaN;
 import static java.lang.Math.*;
 
 public class MainActivity extends AppCompatActivity {
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private Button btnSqrt;
     private Button btnClear;
     private Button btnBracket;
+    private Button btnClearEverything;
+    private Button btnInverse;
     private TextView tvResult;
     private TextView tvControl;
 
@@ -50,24 +53,23 @@ public class MainActivity extends AppCompatActivity {
     private final char multiplyChar = '*';
     private final char divideChar = '/';
     private final char sqrtChar = 's';
+    private final char dotChar = '.';
     private final char EQU= 0;
+    private final char inverseChar = 'x';
     private char choice;
 
-    private double value1 = Double.NaN;
+    private double value1 = NaN;
     private double value2;
 
     private boolean isFinished;
 
 
     static final private int ALERT_DIALOG_PLAIN = 1;
-    static final private int ALERT_DIALOG_BUTTONS = 2;
-    static final private int ALERT_DIALOG_LIST = 3;
-    static final private int CUSTOM_ALERT_DIALOG = 4;
+
 
     private Button btnNewAlertDialog;
-    private Button btnNewAlertDialogButton;
-    private Button btnNewAlertDialogList;
-    private Button btnNewCustomAlertDialog;
+    private boolean checkBracket = false;
+
 
 
     @Override
@@ -75,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupUIViews();
+
+
 
 
         btn0.setOnClickListener(new View.OnClickListener() {
@@ -243,9 +247,12 @@ public class MainActivity extends AppCompatActivity {
                 choice = sqrtChar;
                 execute();
                 double result;
+                tvResult.setText( String.valueOf("sqrt("+value1)+")=");
                 result = sqrt(value1);
-                tvResult.setText( String.valueOf(result));
-                tvControl.setText(null);
+
+                value1 = result;
+
+                tvControl.setText(String.valueOf(value1));
 
             }
         });
@@ -259,8 +266,8 @@ public class MainActivity extends AppCompatActivity {
                 tvControl.setText(null);
                 tvControl.setText( String.valueOf(value1));
                 isFinished = true;
-                value1 = Double.NaN;
-                value2 = Double.NaN;
+                value1 = NaN;
+                value2 = NaN;
             }
         });
 
@@ -272,13 +279,91 @@ public class MainActivity extends AppCompatActivity {
                     tvControl.setText(name.subSequence(0, name.length() - 1));
                 }
                 else{
-                    value1 = Double.NaN;
-                    value2 = Double.NaN;
+                    value1 = NaN;
+                    value2 = NaN;
                     tvControl.setText(null);
                     tvResult.setText(null);
                 }
             }
+
         });
+
+        btnDot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(tvControl.getText().length() > 0){
+                    tvControl.setText(tvControl.getText().toString() + ".");
+                }
+                else{
+
+                }
+            }
+
+        });
+
+        btnBracket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(checkBracket){
+                    tvControl.setText(tvControl.getText().toString() + ")");
+                    checkBracket = false;
+                }else{
+                    tvControl.setText(tvControl.getText().toString() + "(");
+                    checkBracket = true;
+                }
+            }
+
+        });
+        btnClearEverything.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              tvControl.setText(null);
+              tvResult.setText(null);
+              value1 = NaN;
+              value2 = NaN;
+
+            }
+
+        });
+        btnPlusMinus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(tvControl.getText().length() > 0){
+                    tvControl.setText("-"+tvControl.getText().toString());
+                }
+            }
+
+        });
+
+       /* execute();
+        choice = EQU;
+        tvResult.setText(tvResult.getText().toString() + String.valueOf(value2) + "=");
+        tvControl.setText(null);
+        tvControl.setText( String.valueOf(value1));
+        isFinished = true;
+        value1 = Double.NaN;
+        value2 = Double.NaN;
+
+
+        double result;
+        result = sqrt(value1);
+*/
+        btnInverse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(tvControl.getText().length() > 0){
+                    execute();
+                    choice = inverseChar;
+                    tvResult.setText("1/"+ String.valueOf(value1) + "=");
+                    double result = 1 / value1;
+                    value1 = result;
+                    tvControl.setText(String.valueOf(value1));
+                }
+            }
+
+        });
+
+
 
     }
 
@@ -312,8 +397,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Dialog createPlainAlertDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setTitle("Autorzy");
-        dialogBuilder.setMessage("Mateusz Szubart @@ Mateusz Gąsior");
+        dialogBuilder.setTitle(R.string.authors);
+        dialogBuilder.setMessage(R.string.authors_name);
         return dialogBuilder.create();
     }
 
@@ -338,10 +423,12 @@ public class MainActivity extends AppCompatActivity {
         btnSqrt = (Button)findViewById(R.id.btnSqrt);
         btnClear = (Button)findViewById(R.id.btnClear);
         btnBracket = (Button)findViewById(R.id.btnBracket);
+        btnClearEverything = (Button)findViewById(R.id.btnClearEverything);
+        btnInverse=(Button)findViewById(R.id.btnInverse);
         tvControl = (TextView)findViewById(R.id.tvControl);
         tvResult = (TextView)findViewById(R.id.tvResult);
 
-        btnNewAlertDialog = (Button) findViewById(R.id.btnNewAlertDialog);
+        btnNewAlertDialog = (Button)findViewById(R.id.btnNewAlertDialog);
 
         initButtonsClick();
 
@@ -365,7 +452,11 @@ public class MainActivity extends AppCompatActivity {
                     value1 = value1 / value2;
                     break;
                 case sqrtChar:
-                    value1 = sqrt(value1);
+
+                    break;
+                case inverseChar:
+
+                    break;
 
 
                 case EQU:

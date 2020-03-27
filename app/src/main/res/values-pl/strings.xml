@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Kalkulator</string>
+    <string name="authors">Kalkulator wykonali:</string>
+    <string name="authors_name">Mateusz Szubart i Mateusz Gąsior </string>
+    <string name="group"> 32INF_ISM_SP</string>
+</resources>

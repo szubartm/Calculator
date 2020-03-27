@@ -1,5 +1,6 @@
 package com.example.calculator;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -363,8 +364,16 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-
-
+        if (savedInstanceState != null) {
+            value1 = savedInstanceState.getDouble("control");
+            tvControl.setText(String.valueOf(value1));
+            value2 = savedInstanceState.getDouble("result");
+            if(Double.isNaN(value2)){
+                tvResult.setText(null);
+            }else{
+            tvResult.setText(String.valueOf(value2));
+        }
+        }
     }
 
     private void initButtonsClick() {
@@ -468,4 +477,21 @@ public class MainActivity extends AppCompatActivity {
             value1 = Double.parseDouble(tvControl.getText().toString());
         }
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if(!Double.isNaN(value1)) {
+            value2 = Double.parseDouble(tvControl.getText().toString());
+        }else{
+                value1 = Double.parseDouble(tvControl.getText().toString());
+            }
+       //value2 = Double.parseDouble(tvResult.getText().toString());
+
+        outState.putDouble("control", value1);
+        outState.putDouble("result", value2);
+    }
+
+
 }

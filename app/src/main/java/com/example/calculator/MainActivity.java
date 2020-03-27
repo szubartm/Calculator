@@ -6,6 +6,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 import static java.lang.Math.*;
 
@@ -46,7 +57,17 @@ public class MainActivity extends AppCompatActivity {
     private double value2;
 
     private boolean isFinished;
-    private View.OnClickListener a;
+
+
+    static final private int ALERT_DIALOG_PLAIN = 1;
+    static final private int ALERT_DIALOG_BUTTONS = 2;
+    static final private int ALERT_DIALOG_LIST = 3;
+    static final private int CUSTOM_ALERT_DIALOG = 4;
+
+    private Button btnNewAlertDialog;
+    private Button btnNewAlertDialogButton;
+    private Button btnNewAlertDialogList;
+    private Button btnNewCustomAlertDialog;
 
 
     @Override
@@ -54,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupUIViews();
+
 
         btn0.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -257,6 +279,42 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+    }
+
+    private void initButtonsClick() {
+        OnClickListener listener = new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.btnNewAlertDialog:
+                        showDialog(ALERT_DIALOG_PLAIN);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        };
+        btnNewAlertDialog.setOnClickListener(listener);
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case ALERT_DIALOG_PLAIN:
+                return createPlainAlertDialog();
+            default:
+                return null;
+
+        }
+    }
+
+    private Dialog createPlainAlertDialog() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setTitle("Autorzy");
+        dialogBuilder.setMessage("Mateusz Szubart @@ Mateusz Gąsior");
+        return dialogBuilder.create();
     }
 
     private void setupUIViews(){
@@ -282,6 +340,10 @@ public class MainActivity extends AppCompatActivity {
         btnBracket = (Button)findViewById(R.id.btnBracket);
         tvControl = (TextView)findViewById(R.id.tvControl);
         tvResult = (TextView)findViewById(R.id.tvResult);
+
+        btnNewAlertDialog = (Button) findViewById(R.id.btnNewAlertDialog);
+
+        initButtonsClick();
 
     }
 
